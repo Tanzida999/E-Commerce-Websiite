@@ -1,8 +1,10 @@
+import "./App.css";
+
 function App() {
   return (
-    <div>
-      <h1 className="text-5xl font-bold underline">Hello world!</h1>
-    </div>
+    <>
+      <h1 className="text-4xl font-bold underline">Vite + React</h1>
+    </>
   );
 }
 
