@@ -3,6 +3,7 @@ import {
   createUser,
   getAllUsers,
   getcurrentUserUserProfile,
+  updateCurrentUserProfile,
 } from "../controllers/userController.js";
 import { loginUser } from "../controllers/userController.js";
 import { logoutCurrentUser } from "../controllers/userController.js";
@@ -17,5 +18,8 @@ router
 router.post("/auth", loginUser);
 router.post("/logout", logoutCurrentUser);
 
-router.route("/profile").get(authenticate, getcurrentUserUserProfile);
+router
+  .route("/profile")
+  .get(authenticate, getcurrentUserUserProfile)
+  .put(authenticate, updateCurrentUserProfile);
 export default router;
