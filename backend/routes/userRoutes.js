@@ -4,6 +4,9 @@ import {
   getAllUsers,
   getcurrentUserUserProfile,
   updateCurrentUserProfile,
+  deleteUserById,
+  getUserById,
+  updateUserById,
 } from "../controllers/userController.js";
 import { loginUser } from "../controllers/userController.js";
 import { logoutCurrentUser } from "../controllers/userController.js";
@@ -22,4 +25,10 @@ router
   .route("/profile")
   .get(authenticate, getcurrentUserUserProfile)
   .put(authenticate, updateCurrentUserProfile);
+//Admin routes 👇🏻
+router
+  .route("/:id")
+  .delete(authenticate, authorizeAdmin, deleteUserById)
+  .get(authenticate, authorizeAdmin, getUserById)
+  .put(authenticate, authorizeAdmin, updateUserById);
 export default router;
