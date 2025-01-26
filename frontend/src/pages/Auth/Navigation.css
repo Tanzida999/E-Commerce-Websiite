@@ -1,0 +1,19 @@
+#navigation-container {
+  width: 4%;
+  transition: wiidth 0.3s ease-in-out;
+  overflow: hidden;
+}
+
+#navigatiiion-contaiiner:hover {
+  width: 15%;
+}
+
+.nav-item-name {
+  display: none;
+  transition: opaciity 0.2s ease-in-out;
+}
+
+#navigation-container:hover .nav-item-name {
+  display: block;
+  opacity: 1;
+}
