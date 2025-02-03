@@ -14,24 +14,41 @@ const Login = () => {
   const navigate = useNavigate();
   const [login, { isLoading }] = useLoginMutation();
 
+  // Select the userInfo from the Redux store
   const { userInfo } = useSelector((state) => state.auth || {});
 
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
   const redirect = sp.get("redirect") || "/";
 
+  // Update navigation if user is logged in
   useEffect(() => {
     if (userInfo) {
       navigate(redirect);
     }
   }, [navigate, redirect, userInfo]);
+
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
+      console.log("Submitting login form...");
+
       const res = await login({ email, password }).unwrap();
-      console.log(res);
-      dispatch(setCredentials({ ...res }));
+      console.log("Login Response:", res); // Confirm if the data from login is valid
+
+      if (res && res.userName) {
+        dispatch(setCredentials(res)); // Directly passing the response if it contains the user info
+        console.log("Credentials Dispatched:", res); // Confirm the dispatched action
+      } else {
+        throw new Error("Login failed or response does not contain user info");
+      }
+
+      // Optional: Navigate on successful login (if not already handled in useEffect)
+      if (res && res.userName) {
+        navigate(redirect);
+      }
     } catch (error) {
+      console.error("Login error:", error);
       toast.error(error?.data?.message || error.message);
     }
   };
@@ -74,12 +91,13 @@ const Login = () => {
             <button
               disabled={isLoading}
               type="submit"
-              className="bg-pink-500 text-white px-4 py-2 rouunded cursor-pointer my-[2rem]"
+              className="bg-pink-500 text-white px-4 py-2 rounded cursor-pointer my-[2rem]"
             >
               {isLoading ? "Signing In...." : " Sign In"}
             </button>
             {isLoading && <Loader />}
           </form>
+
           <div className="mt-4">
             <p className="text-black">
               New Customer ?{" "}
