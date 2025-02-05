@@ -30,20 +30,25 @@ const Login = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+
+    if (!email || !password) {
+      toast.error("Please fill in both fields");
+      return;
+    }
+
     try {
       console.log("Submitting login form...");
 
       const res = await login({ email, password }).unwrap();
-      console.log("Login Response:", res); // Confirm if the data from login is valid
+      console.log("Login Response:", res);
 
-      if (res && res.userName) {
-        dispatch(setCredentials(res)); // Directly passing the response if it contains the user info
+      if (res && res._id) {
+        dispatch(setCredentials(res));
         console.log("Credentials Dispatched:", res); // Confirm the dispatched action
       } else {
         throw new Error("Login failed or response does not contain user info");
       }
 
-      // Optional: Navigate on successful login (if not already handled in useEffect)
       if (res && res.userName) {
         navigate(redirect);
       }

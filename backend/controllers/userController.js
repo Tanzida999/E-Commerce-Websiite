@@ -7,7 +7,9 @@ import createToken from "../utils/createToken.js";
 const createUser = asyncHandler(async (req, res) => {
   const { userName, email, password } = req.body;
   if (!userName || !email || !password) {
-    throw new Error("Please FIll all the inputs");
+    console.log("Missing fields in request body", req.body); // Log the body to check what's coming
+
+    throw new Error("Please Fill all the inputs");
   }
   const userExits = await User.findOne({ email });
   if (userExits) {
@@ -38,24 +40,39 @@ const createUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
+  // Check if email and password are provided
+  if (!email || !password) {
+    res.status(400);
+    throw new Error("Please provide both email and password");
+  }
+
+  // Find the user by email
   const existingUser = await User.findOne({ email });
 
-  if (existingUser) {
-    const isPasswordValid = await bcrypt.compare(
-      password,
-      existingUser.password
-    );
-    if (isPasswordValid) {
-      createToken(res, existingUser._id);
+  // If the user doesn't exist
+  if (!existingUser) {
+    res.status(404);
+    throw new Error("User not found");
+  }
 
-      res.status(201).json({
-        _id: existingUser._id,
-        userName: existingUser.userName,
-        email: existingUser.email,
-        isAdmin: existingUser.isAdmin,
-      });
-      return; //exit the function after sending the response
-    }
+  // Compare the password provided with the stored hashed password
+  const isPasswordValid = await bcrypt.compare(password, existingUser.password);
+
+  if (isPasswordValid) {
+    // Create and send the token
+    createToken(res, existingUser._id);
+
+    // Respond with user information
+    res.status(200).json({
+      _id: existingUser._id,
+      userName: existingUser.userName,
+      email: existingUser.email,
+      isAdmin: existingUser.isAdmin,
+    });
+  } else {
+    // Unauthorized error for invalid password
+    res.status(401);
+    throw new Error("Invalid password");
   }
 });
 
