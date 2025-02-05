@@ -115,6 +115,7 @@ const Login = () => {
             </p>
           </div>
         </div>
+        <img src="/pexels-sarika-630844.jpg" alt="" />
       </section>
     </div>
   );
