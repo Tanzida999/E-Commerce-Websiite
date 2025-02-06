@@ -65,7 +65,7 @@ const Profile = () => {
                 placeholder="Enter email"
                 className="form-input p-4 rounded-sm w-full"
                 value={email}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div className="mb-4">
@@ -75,7 +75,7 @@ const Profile = () => {
                 placeholder="Enter Password"
                 className="form-input p-4 rounded-sm w-full"
                 value={password}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
             <div className="mb-4">
@@ -85,7 +85,7 @@ const Profile = () => {
                 placeholder="Confirm Passpord"
                 className="form-input p-4 rounded-sm w-full"
                 value={confirmPassword}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </div>
             <div className="flex justify-between">
