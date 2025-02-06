@@ -21,16 +21,26 @@ const UserList = () => {
     refetch();
   }, [refetch]);
 
-  const toggleEdit = (id, name, email) => {
+  const deleteHandler = async (id) => {
+    if (window.confirm("Are You Sure?")) {
+      try {
+        await deleteUser(id);
+      } catch (error) {
+        toast.error(error.data.message || error.error);
+      }
+    }
+  };
+
+  const toggleEdit = (id, userName, email) => {
     setEditableUserId(id);
-    setEditableUserName(name);
+    setEditableUserName(userName);
     setEditableUserEmail(email);
   };
 
   const updateHandler = async (id) => {
     try {
       await updateUser({
-        _id: id,
+        userId: id,
         userName: editableUserName,
         email: editableUserEmail,
       }).unwrap();
@@ -38,7 +48,7 @@ const UserList = () => {
       setEditableUserId(null);
       refetch();
     } catch (error) {
-      toast.error(error?.data?.message || error.message);
+      toast.error(error?.data?.message || error.error);
     }
   };
 
@@ -121,6 +131,26 @@ const UserList = () => {
                           }
                         >
                           <FaEdit className="ml-[1rem]" />
+                        </button>
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-4 py-2">
+                    {user.isAdmin ? (
+                      <FaCheck style={{ color: "green" }} />
+                    ) : (
+                      <FaTimes style={{ color: "red" }} />
+                    )}
+                  </td>
+
+                  <td className="px-4 py-2">
+                    {!user.isAdmin && (
+                      <div className="flex">
+                        <button
+                          className=" bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                          onClick={() => deleteHandler(user._id)}
+                        >
+                          <FaTrash />
                         </button>
                       </div>
                     )}
