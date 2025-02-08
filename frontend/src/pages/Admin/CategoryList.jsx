@@ -6,7 +6,12 @@ import {
 import { toast } from "react-toastify";
 
 const CategoryList = () => {
-  const { data: categories, isLoading, error } = useFetchCategoriesQuery(); // Added loading and error states
+  const {
+    data: categories,
+    isLoading,
+    error,
+    refetch,
+  } = useFetchCategoriesQuery(); // Added loading and error states
   const [name, setName] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [updateName, setUpdateName] = useState("");
@@ -29,6 +34,7 @@ const CategoryList = () => {
       } else {
         setName("");
         toast.success(`${result.name} is Created`);
+        refetch();
       }
     } catch (error) {
       console.error(error);
