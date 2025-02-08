@@ -35,5 +35,5 @@ export const {
   useCreateCategoryMutation,
   useUpdateCategoryMutation,
   useDeleteCategoryMutation,
-  useFetchCategoriesQuery,
+  useFetchCategoriesQuery, 
 } = categoryApiSlice;
