@@ -1,7 +1,9 @@
 import { useState } from "react";
 import {
   useCreateCategoryMutation,
+  useDeleteCategoryMutation,
   useFetchCategoriesQuery,
+  useUpdateCategoryMutation,
 } from "../../redux/api/categoryApiSlice";
 import { toast } from "react-toastify";
 import CategoryForm from "../../components/CategoryForm";
@@ -13,13 +15,15 @@ const CategoryList = () => {
     isLoading,
     error,
     refetch,
-  } = useFetchCategoriesQuery(); // Added loading and error states
+  } = useFetchCategoriesQuery();
   const [name, setName] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [updateName, setUpdateName] = useState("");
+  const [updatingName, setUpdatingName] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
 
   const [createCategory] = useCreateCategoryMutation();
+  const [updateCategory] = useUpdateCategoryMutation();
+  const [deleteCategory] = useDeleteCategoryMutation();
 
   const handleCreateCategory = async (e) => {
     e.preventDefault();
@@ -44,27 +48,70 @@ const CategoryList = () => {
     }
   };
 
-  // Loading and Error handling
   if (isLoading) return <div>Loading categories...</div>;
   if (error) return <div>Error: {error.message}</div>;
+
+  const handleUpdateCategory = async (e) => {
+    e.preventDefault();
+    if (!updatingName) {
+      toast.error("Category name is require");
+      return;
+    }
+    try {
+      const result = await updateCategory({
+        categoryId: selectedCategory._id,
+        updatedCategory: {
+          name: updatingName,
+        },
+      }).unwrap();
+      if (result.error) {
+        toast.error(result.error);
+      } else {
+        toast.success(`${result.name} is updated`);
+        selectedCategory(null);
+        setUpdatingName("");
+        setModalVisible(false);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDeleteCategory = async () => {
+    try {
+      const result = await deleteCategory(selectedCategory._id).unwrap();
+      if (result.error) {
+        toast.error(result.error);
+      } else {
+        toast.success(`${result.name} is deleted`);
+        setSelectedCategory(null);
+        setModalVisible(false);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Category deletion failed, try again");
+    }
+  };
 
   return (
     <div className="ml-[10rem] flex flex-col md:flex-row">
       <div className="md:w-3/4 p-3">
-        <div className=" ml-16 h-12">Manage Categories</div>
+        <div className="ml-16 h-12 text-xl font-semibold">
+          Manage Categories
+        </div>
 
         {/* Form to create category */}
-        <form onSubmit={handleCreateCategory}>
+        <form onSubmit={handleCreateCategory} className="flex space-x-3">
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Category Name"
-            className="border p-2 rounded"
+            className="border p-2 rounded w-full"
           />
           <button
             type="submit"
-            className="bg-blue-500 text-white p-2 rounded mt-2"
+            className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
           >
             Create Category
           </button>
@@ -77,11 +124,11 @@ const CategoryList = () => {
           {categories?.map((category) => (
             <div key={category._id}>
               <button
-                className="bg-white border border-pink-500 text-pink-500 py-2 px-4 rounded-lg m-3 hover:bg-pink-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50"
+                className="bg-white border border-pink-500 text-pink-500 py-2 px-4 rounded-lg m-3 hover:bg-pink-500 hover:text-white focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50"
                 onClick={() => {
                   setModalVisible(true);
                   setSelectedCategory(category);
-                  setUpdateName(category.name);
+                  setUpdatingName(category.name);
                 }}
               >
                 {category.name}
@@ -92,25 +139,16 @@ const CategoryList = () => {
       </div>
 
       {/* Modal */}
-      {modalVisible && selectedCategory && (
-        <div className="modal">
-          <div className="modal-content">
-            <h3>Update Category</h3>
-            <input
-              type="text"
-              value={updateName}
-              onChange={(e) => setUpdateName(e.target.value)}
-            />
-            <button
-              onClick={() => {
-                /* Handle category update */
-              }}
-            >
-              Update Category
-            </button>
-            <button onClick={() => setModalVisible(false)}>Close</button>
-          </div>
-        </div>
+      {modalVisible && (
+        <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)}>
+          <CategoryForm
+            value={updatingName}
+            setValue={setUpdatingName}
+            handleSubmit={handleUpdateCategory}
+            buttonText="Update"
+            handleDelete={handleDeleteCategory}
+          />
+        </Modal>
       )}
     </div>
   );
