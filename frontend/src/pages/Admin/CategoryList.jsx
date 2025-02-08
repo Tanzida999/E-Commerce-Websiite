@@ -101,17 +101,22 @@ const CategoryList = () => {
         </div>
 
         {/* Form to create category */}
-        <form onSubmit={handleCreateCategory} className="flex space-x-3">
+        <form
+          onSubmit={handleCreateCategory}
+          className="flex flex-col space-x-3"
+        >
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Category Name"
-            className="border p-2 rounded w-full"
-          />
+            className="border p-2 rounded w-full text-center"
+          />{" "}
+          <br />
+          <br />
           <button
             type="submit"
-            className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+            className="bg-pink-500 text-white p-2 rounded-lg hover:bg-pink-600 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
           >
             Create Category
           </button>
