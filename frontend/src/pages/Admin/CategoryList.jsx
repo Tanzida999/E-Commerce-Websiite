@@ -8,6 +8,7 @@ import {
 import { toast } from "react-toastify";
 import CategoryForm from "../../components/CategoryForm";
 import Modal from "../../components/Modal";
+import AdminMenu from "./AdminMenu";
 
 const CategoryList = () => {
   const {
@@ -95,6 +96,7 @@ const CategoryList = () => {
 
   return (
     <div className="ml-[10rem] flex flex-col md:flex-row">
+      <AdminMenu />
       <div className="md:w-3/4 p-3">
         <div className="ml-16 h-12 text-xl font-semibold">
           Manage Categories
