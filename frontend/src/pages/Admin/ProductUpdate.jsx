@@ -30,7 +30,7 @@ const ProductUpdate = () => {
   const { data: categories = [] } = useFetchCategoriesQuery();
 
   const [uploadProductImage] = useUploadProductImageMutation();
-  const [updateProdct] = useUpdateProductMutation();
+  const [updateProduct] = useUpdateProductMutation();
   const [deleteProduct] = useDeleteProductMutation();
 
   useEffect(() => {
@@ -46,30 +46,57 @@ const ProductUpdate = () => {
     }
   }, [productData]);
 
-  const handleUpdateProduct = () => {
-    const updatedProduct = {
-      name,
-      description,
-      price,
-      quantity,
-      brand,
-      category,
-      countInStock: stock,
-      image,
-    };
-
-    updateProdct(updatedProduct)
-      .then((response) => {
-        if (response?.data) {
-          toast.success("Product updated successfully");
-          navigate("/admin/products");
-        }
-      })
-      .catch((error) => {
-        toast.error("Failed to update product");
-      });
+  const uploadFileHandler = async (e) => {
+    const formData = new FormData();
+    formData.append("image", e.target.files[0]);
+    try {
+      const res = await uploadProductImage(formData).unwrap();
+      toast.success("Item added Successfully");
+      setImage(res.image);
+    } catch (error) {
+      toast.error("Item Added Successfully");
+    }
   };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData();
+      formData.append("image", image);
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("price", price);
+      formData.append("category", category);
+      formData.append("quantity", quantity);
+      formData.append("brand", brand);
+      formData.append("countInStock", stock);
 
+      const { data } = await updateProduct({ productId: params._id, formData });
+
+      if (data.error) {
+        toast.error(data.error);
+      } else {
+        toast.success(`Product Successfully Updated`);
+        navigate("/admin/allproducts");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("product update failed");
+    }
+  };
+  const handleDelete = async () => {
+    try {
+      let answer = window.confirm(
+        "Are You sure you want to delete this product?"
+      );
+      if (!answer) return;
+      const { data } = await deleteProduct(params._id);
+      toast.success(`${data.name} is deleted`);
+      navigate("/admin/allproducts");
+    } catch (error) {
+      console.error(error);
+      toast.error("Delete Failed Try again.");
+    }
+  };
   return (
     <div className="container xl:mx-[9rem] sm:mx-[0]">
       <div className="flex flex-col md:flex-row">
@@ -83,6 +110,7 @@ const ProductUpdate = () => {
                 type="file"
                 name="image"
                 accept="image/*"
+                onChange={uploadFileHandler}
                 className={!image ? "hidden" : "text-black"}
               />
             </label>
@@ -172,12 +200,20 @@ const ProductUpdate = () => {
               </div>
             </div>
 
-            <button
-              onClick={handleUpdateProduct}
-              className="py-4 px-10 mt-5 rounded-lg text-lg font-bold bg-pink-600"
-            >
-              Submit
-            </button>
+            <div>
+              <button
+                onClick={handleSubmit}
+                className="py-4 px-10 mt-5 rounded-lg text-lg font-bold bg-green-600 mr-6"
+              >
+                Update
+              </button>
+              <button
+                onClick={handleDelete}
+                className="py-4 px-10 mt-5 rounded-lg text-lg font-bold bg-pink-600"
+              >
+                Delette
+              </button>
+            </div>
           </div>
         </div>
       </div>
