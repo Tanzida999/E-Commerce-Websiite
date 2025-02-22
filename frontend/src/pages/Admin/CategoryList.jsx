@@ -55,7 +55,7 @@ const CategoryList = () => {
   const handleUpdateCategory = async (e) => {
     e.preventDefault();
     if (!updatingName) {
-      toast.error("Category name is require");
+      toast.error("Category name is required");
       return;
     }
     try {
@@ -69,12 +69,14 @@ const CategoryList = () => {
         toast.error(result.error);
       } else {
         toast.success(`${result.name} is updated`);
-        selectedCategory(null);
+        setSelectedCategory(null); // Corrected: use setSelectedCategory
         setUpdatingName("");
         setModalVisible(false);
+        refetch();
       }
     } catch (error) {
       console.error(error);
+      toast.error("Category update failed, try again");
     }
   };
 
@@ -87,6 +89,7 @@ const CategoryList = () => {
         toast.success(`${result.name} is deleted`);
         setSelectedCategory(null);
         setModalVisible(false);
+        refetch();
       }
     } catch (error) {
       console.error(error);
@@ -113,7 +116,7 @@ const CategoryList = () => {
             onChange={(e) => setName(e.target.value)}
             placeholder="Category Name"
             className="border p-2 rounded w-full text-center"
-          />{" "}
+          />
           <br />
           <br />
           <button
@@ -146,7 +149,7 @@ const CategoryList = () => {
       </div>
 
       {/* Modal */}
-      {modalVisible && (
+      {modalVisible && selectedCategory && (
         <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)}>
           <CategoryForm
             value={updatingName}
@@ -154,6 +157,7 @@ const CategoryList = () => {
             handleSubmit={handleUpdateCategory}
             buttonText="Update"
             handleDelete={handleDeleteCategory}
+            isUpdate={true} // Passing this flag to indicate it's an update
           />
         </Modal>
       )}

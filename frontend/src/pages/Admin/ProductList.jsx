@@ -7,6 +7,7 @@ import {
 import { useFetchCategoriesQuery } from "../../redux/api/categoryApiSlice";
 import { toast } from "react-toastify";
 import AdminMenu from "./AdminMenu";
+
 const ProductList = () => {
   const [image, setImage] = useState("");
   const [name, setName] = useState("");
@@ -32,7 +33,7 @@ const ProductList = () => {
       setImage(res.image);
       setImageURL(res.image);
     } catch (error) {
-      toast.error(error?.data?.massage || error.error);
+      toast.error(error?.data?.message || error.error);
     }
   };
 
@@ -52,136 +53,119 @@ const ProductList = () => {
       const { data } = await createProduct(productData);
 
       if (data.error) {
-        toast.error("product Create Failed and try again please");
+        toast.error("Product creation failed, please try again.");
       } else {
         toast.success(`${data.name} is created`);
         navigate("/admin/allproducts");
       }
     } catch (error) {
       console.error(error);
-      toast.error("product Create Failed and try again please");
+      toast.error("Product creation failed, please try again.");
     }
   };
+
   return (
     <div className="container xl:mx-[9rem] sm:mx-[0]">
       <div className="flex flex-col md:flex-row">
         <AdminMenu />
-        <div className="md-w-3/4 p-3">
-          <div className="h-12">Create Product</div>
-
+        <div className="md:w-3/4 p-6 bg-white shadow-lg rounded-lg">
+          <h2 className="text-xl font-bold mb-4">Create Product</h2>
           {imageURL && (
-            <div className="text-center">
+            <div className="text-center mb-4">
               <img
                 src={imageURL}
                 alt="product"
-                className="block mx-auto max-h-[200px]"
+                className="block mx-auto max-h-[200px] rounded-lg"
               />
             </div>
           )}
-          <div className="mb-3">
-            <label className="border text-black px-4 block w-full text-center rounded-lg cursor-pointer font-bold ">
-              {image ? image.name : "Upload Image"}
+          <label className="border text-black px-4 py-2 block w-full text-center rounded-lg cursor-pointer font-bold bg-gray-100 mb-4">
+            {image ? image.name : "Upload Image"}
+            <input
+              type="file"
+              name="image"
+              accept="image/*"
+              onChange={uploadFileHandler}
+              className="hidden"
+            />
+          </label>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label>Name</label>
               <input
-                type="file"
-                name="image"
-                accept="image/*"
-                onChange={uploadFileHandler}
-                className={!image ? "hidden" : "text-black"}
+                type="text"
+                className="w-full p-3 border rounded-lg"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
-            </label>
+            </div>
+            <div>
+              <label>Price</label>
+              <input
+                type="number"
+                className="w-full p-3 border rounded-lg"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+              />
+            </div>
+            <div>
+              <label>Quantity</label>
+              <input
+                type="number"
+                className="w-full p-3 border rounded-lg"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+              />
+            </div>
+            <div>
+              <label>Brand</label>
+              <input
+                type="text"
+                className="w-full p-3 border rounded-lg"
+                value={brand}
+                onChange={(e) => setBrand(e.target.value)}
+              />
+            </div>
+            <div>
+              <label>Count In Stock</label>
+              <input
+                type="text"
+                className="w-full p-3 border rounded-lg"
+                value={stock}
+                onChange={(e) => setStock(e.target.value)}
+              />
+            </div>
+            <div>
+              <label>Category</label>
+              <select
+                className="w-full p-3 border rounded-lg"
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                {categories?.map((c) => (
+                  <option key={c._id} value={c._id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
-          <div className="p-3">
-            <div className="flex flex-wrap">
-              <div className="one">
-                <label htmlFor="name"> Name</label>
-                <br />
-                <input
-                  type="text"
-                  className="p-4 mb-3 w-[3-rem] border rounded-lg bg-white text-black"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-              <div className="two ml-10">
-                <label htmlFor="name block"> Price</label>
-                <br />
-                <input
-                  type="number"
-                  className="p-4 mb-3 w-[3-rem] border rounded-lg bg-white text-black"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="flex flex-wrap">
-              <div className="one">
-                <label htmlFor="name block"> Quantity</label>
-                <br />
-                <input
-                  type="number"
-                  className="p-4 mb-3 w-[3-rem] border rounded-lg bg-white text-black"
-                  value={quantity}
-                  onChange={(e) => setQuantity(e.target.value)}
-                />
-              </div>
-              <div className="two ml-10">
-                <label htmlFor="name block"> Brand</label>
-                <br />
-                <input
-                  type="text"
-                  className="p-4 mb-3 w-[3-rem] border rounded-lg bg-white text-black"
-                  value={brand}
-                  onChange={(e) => setBrand(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <label htmlFor="" className="my-4">
-              Description
-            </label>
+          <div className="mt-4">
+            <label>Description</label>
             <textarea
-              type="text"
-              className="p-2 mb-3 bg-white border rounded-lg w-[95%] text-black"
+              className="w-full p-3 border rounded-lg"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             ></textarea>
-
-            <div className="flex justify-between">
-              <div>
-                <label htmlFor="name block">Count In Stock</label>
-                <br />
-                <input
-                  type="text"
-                  className="p-4 mb-3 w-[30rem] border rounded-lg bg-white text-black "
-                  value={stock}
-                  onChange={(e) => setStock(e.target.value)}
-                />
-              </div>
-              <div className="ml-6">
-                <label htmlFor=""> Category</label>
-                <br />
-                <select
-                  placeholder="Choose Category"
-                  className="p-4 mb-3 w-[30rem] border rounded-lg bg-white text-black "
-                  onChange={(e) => setCategory(e.target.value)}
-                >
-                  {categories?.map((c) => (
-                    <option key={c._id} value={c._id}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <button
-              onClick={handleSubmit}
-              className="py-4 px-10 mt-5 rounded-lg text-lg font-bold bg-pink-600"
-            >
-              Submit
-            </button>
           </div>
+
+          <button
+            onClick={handleSubmit}
+            className="mt-5 w-full py-3 bg-pink-600 text-white rounded-lg font-bold text-lg"
+          >
+            Submit
+          </button>
         </div>
       </div>
     </div>

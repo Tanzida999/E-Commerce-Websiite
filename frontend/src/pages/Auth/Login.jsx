@@ -37,14 +37,9 @@ const Login = () => {
     }
 
     try {
-      console.log("Submitting login form...");
-
       const res = await login({ email, password }).unwrap();
-      console.log("Login Response:", res);
-
       if (res && res._id) {
         dispatch(setCredentials(res));
-        console.log("Credentials Dispatched:", res); // Confirm the dispatched action
       } else {
         throw new Error("Login failed or response does not contain user info");
       }
@@ -53,41 +48,36 @@ const Login = () => {
         navigate(redirect);
       }
     } catch (error) {
-      console.error("Login error:", error);
       toast.error(error?.data?.message || error.message);
     }
   };
 
   return (
     <div>
-      <section className="pl-[10rem] flex flex-wrap">
-        <div className="mr-[4rem] mt-5rem ">
-          <h1 className="text-3xl font-semibold mb-4">Sign In</h1>
-          <form
-            action=""
-            className="container w-[25rem]"
-            onSubmit={submitHandler}
-          >
-            <div className="my-[2rem] ">
+      <section className="flex justify-center items-center min-h-screen bg-gray-100 py-10">
+        <div className="w-full max-w-md bg-white shadow-lg rounded-md p-6">
+          <h1 className="text-3xl font-semibold mb-4 text-center">Sign In</h1>
+          <form onSubmit={submitHandler}>
+            <div className="my-4">
               <label htmlFor="email" className="block text-sm font-semibold">
                 Email Address
               </label>
               <input
                 type="email"
                 id="email"
-                className="mt-1 p-2 border rounded w-full"
+                className="mt-1 p-2 border rounded w-full focus:ring-2 focus:ring-pink-500"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            <div className="my-[2rem]">
+            <div className="my-4">
               <label htmlFor="password" className="block text-sm font-semibold">
                 Password
               </label>
               <input
                 type="password"
                 id="password"
-                className="mt-1 p-2 border rounded w-full"
+                className="mt-1 p-2 border rounded w-full focus:ring-2 focus:ring-pink-500"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -96,16 +86,16 @@ const Login = () => {
             <button
               disabled={isLoading}
               type="submit"
-              className="bg-pink-500 text-white px-4 py-2 rounded cursor-pointer my-[2rem]"
+              className="bg-pink-500 text-white w-full py-2 rounded mt-4 disabled:opacity-50"
             >
-              {isLoading ? "Signing In...." : " Sign In"}
+              {isLoading ? "Signing In..." : "Sign In"}
             </button>
             {isLoading && <Loader />}
           </form>
 
-          <div className="mt-4">
+          <div className="mt-4 text-center">
             <p className="text-black">
-              New Customer ?{" "}
+              New Customer?{" "}
               <Link
                 to={redirect ? `/register?redirect=${redirect}` : "/register"}
                 className="text-pink-500 hover:underline"
@@ -115,11 +105,12 @@ const Login = () => {
             </p>
           </div>
         </div>
+
         <img
           src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1964&q=80"
-          alt=""
-          className=" flex h-[45rem] w-1/2 xl:block md:hidden sm:hidden rounded-lg"
-        />{" "}
+          alt="Login"
+          className="hidden md:block md:w-1/2 h-full object-cover rounded-lg"
+        />
       </section>
     </div>
   );

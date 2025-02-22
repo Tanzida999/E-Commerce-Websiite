@@ -3,6 +3,7 @@ import moment from "moment";
 import { useAllProductsQuery } from "../../redux/api/productApiSlice";
 import AdminMenu from "./AdminMenu";
 import Loader from "../../components/Loader";
+
 const AllProducts = () => {
   const { data: products, isLoading, isError } = useAllProductsQuery();
 
@@ -11,50 +12,48 @@ const AllProducts = () => {
   }
 
   if (isError) {
-    return <div>Error Loading Products</div>;
+    return (
+      <div className="text-red-500 text-center">Error Loading Products</div>
+    );
   }
+
   return (
-    <div className="container mx-[9rem]">
+    <div className="container mx-auto px-4">
       <AdminMenu />
-      <div className="flex flex-col md:flex-row">
-        <div className="p-3">
-          {" "}
-          <div className="ml-[2rem] text-xl font-bold h-12">
-            All Products ({products.length})
-          </div>
-          <div className="flex flex-wrap justify-around items-center">
-            {products.map((product) => (
+      <div className="p-3">
+        <div className="ml-8 text-xl font-bold h-12">
+          All Products ({products.length})
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {products.length === 0 ? (
+            <div className="text-center w-full">No products available</div>
+          ) : (
+            products.map((product) => (
               <Link
                 key={product._id}
                 to={`/admin/product/update/${product._id}`}
-                className="block mb-4 overflow-hidden"
+                className="block"
               >
-                <div className="flex">
+                <div className="flex flex-col bg-white shadow-md rounded-md h-full">
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="w-[10rem] object-cover"
+                    className="w-full h-48 object-cover rounded-t-md"
                   />
-
-                  <div className="p-4 flex flex-col justify-around">
+                  <div className="p-4 flex-1">
                     <div className="flex justify-between">
-                      <h5 className="text-xl font-semibold mb-2">
-                        {product?.name}
-                      </h5>
-
+                      <h5 className="text-xl font-semibold">{product?.name}</h5>
                       <p className="text-gray-400 text-sm">
                         {moment(product.createAt).format("MMM Do YYYY")}
                       </p>
                     </div>
-
-                    <p className="text-gray-400 ml:w-[30rem] sm-w-[10rem] text-sm mb-4">
-                      {product?.description?.substring(0, 1160)}...
+                    <p className="text-gray-400 text-sm mb-4">
+                      {product?.description?.substring(0, 160)}...
                     </p>
-
-                    <div className="flex justify-between">
+                    <div className="flex justify-between items-center">
                       <Link
                         to={`/admin/product/update/${product._id}`}
-                        className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-pink-700 rounded-lg hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 dark:bg-pink-600 dark:hover:bg-pink-700 darl:focus:ring-800"
+                        className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-pink-700 rounded-lg hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300"
                       >
                         Update Product{" "}
                         <svg
@@ -73,15 +72,14 @@ const AllProducts = () => {
                           />
                         </svg>
                       </Link>
-                      <p>$ {product?.price}</p>
+                      <p className="text-xl font-semibold">${product?.price}</p>
                     </div>
                   </div>
                 </div>
               </Link>
-            ))}
-          </div>
+            ))
+          )}
         </div>
-        <div className="md:w-1/4 p-3 mt-2"></div>
       </div>
     </div>
   );
