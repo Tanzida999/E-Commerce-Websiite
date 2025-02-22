@@ -35,11 +35,11 @@ const ProductUpdate = () => {
 
   useEffect(() => {
     if (productData && productData._id) {
-      setName(productData.name);
+      setName(productData.name || "");
       setDescription(productData.description);
       setPrice(productData.price);
       setQuantity(productData.quantity);
-      setCategory(productData.categories?._id);
+      setCategory(productData.categories?.[0]?._id || "");
       setBrand(productData.brand);
       setImage(productData.image);
       setStock(productData.countInStock);
@@ -59,30 +59,43 @@ const ProductUpdate = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!name) {
+      toast.error("Name is required!");
+      return;
+    }
+
     try {
-      const formData = new FormData();
-      formData.append("image", image);
-      formData.append("name", name);
-      formData.append("description", description);
-      formData.append("price", price);
-      formData.append("category", category);
-      formData.append("quantity", quantity);
-      formData.append("brand", brand);
-      formData.append("countInStock", stock);
+      const productDetails = {
+        _id: params._id,
+        name,
+        description,
+        price,
+        category,
+        quantity,
+        brand,
+        countInStock: stock,
+        image,
+      };
 
-      const { data } = await updateProduct({ productId: params._id, formData });
+      console.log("Updating product with:", productDetails);
 
-      if (data.error) {
-        toast.error(data.error);
+      const { data, error } = await updateProduct(productDetails);
+
+      console.log("API response:", data, error);
+
+      if (error) {
+        toast.error(error.message || "Update failed");
       } else {
-        toast.success(`Product Successfully Updated`);
+        toast.success("Product Successfully Updated");
         navigate("/admin/allproducts");
       }
     } catch (error) {
-      console.error(error);
-      toast.error("product update failed");
+      console.error("Error updating product:", error);
+      toast.error("Product update failed");
     }
   };
+
   const handleDelete = async () => {
     try {
       let answer = window.confirm(
