@@ -3,7 +3,7 @@ import Message from "../../components/Message.jsx";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight, FaStore } from "react-icons/fa";
 
 const ProductCarousel = () => {
   const { data: products, isLoading, error } = useGetNewProductsQuery();
@@ -16,7 +16,7 @@ const ProductCarousel = () => {
     slidesToScroll: 1,
     arrows: true,
     autoPlay: true,
-    autoPlaySpeed: 3000,
+    autoPlaySpeed: 1000,
     pauseOnHover: true,
     prevArrow: (
       <button className="slick-prev">
@@ -31,7 +31,7 @@ const ProductCarousel = () => {
   };
 
   return (
-    <div className="mb-4 xl:block lg:block md:block mx-auto">
+    <div className="mb-4 ml-4 xl:block lg:block md:block mx-auto relative">
       {isLoading ? null : error ? (
         <Message variant="Danger">
           {error?.data?.message || error.message}
@@ -39,7 +39,7 @@ const ProductCarousel = () => {
       ) : (
         <Slider
           {...settings}
-          className="xl:w-[50rem] lg:w-[50rem] md:w-[56rem] sm:w-[40rem] sm:block mx-auto"
+          className="xl:w-[45rem] lg:w-[48rem] md:w-[54rem] sm:w-[36rem] sm:block mx-auto"
         >
           {products.map(
             ({
@@ -55,13 +55,25 @@ const ProductCarousel = () => {
               quantity,
               countInStock,
             }) => (
-              <div key={_id} className="flex justify-center p-4">
-                <div className="w-full max-w-[45rem] ml-5">
+              <div key={_id} className="flex justify-center p-2">
+                <div className="w-full max-w-[40rem] ml-5">
                   <img
                     src={image}
                     alt={name}
-                    className="w-full rounded-lg object-cover h-[30rem] shadow-lg"
+                    className="w-full rounded-lg object-cover h-[28rem] shadow-lg"
                   />
+                  <div className="mt-3">
+                    <h2>{name}</h2>
+                    <p>${price}</p>
+                    <p>{description}</p>
+                  </div>
+                  <div className="flex justify-between w-[20rem]">
+                    <div className="one">
+                      <h1 className="flex items-center mb-6">
+                        <FaStore className="mr-2 text-white" /> Brand:{brand}
+                      </h1>
+                    </div>
+                  </div>
                 </div>
               </div>
             )
