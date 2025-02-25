@@ -5,6 +5,7 @@ import {
   useDeleteProductMutation,
   useGetProductByIdQuery,
   useUploadProductImageMutation,
+  useCreateReviewMutation,
 } from "../../redux/api/productApiSlice";
 import { useFetchCategoriesQuery } from "../../redux/api/categoryApiSlice";
 import { toast } from "react-toastify";
@@ -24,10 +25,13 @@ const ProductUpdate = () => {
   const [category, setCategory] = useState("");
   const [stock, setStock] = useState("");
   const [image, setImage] = useState("");
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
 
   const [uploadProductImage] = useUploadProductImageMutation();
   const [updateProduct] = useUpdateProductMutation();
   const [deleteProduct] = useDeleteProductMutation();
+  const [addProductReview] = useCreateReviewMutation();
 
   useEffect(() => {
     if (productData) {
@@ -88,6 +92,24 @@ const ProductUpdate = () => {
       } catch (error) {
         toast.error("Delete failed. Try again.");
       }
+    }
+  };
+
+  const handleReviewSubmit = async () => {
+    if (!rating || !comment) {
+      toast.error("Both rating and comment are required!");
+      return;
+    }
+
+    try {
+      await addProductReview({
+        productId: _id,
+        rating,
+        comment,
+      }).unwrap();
+      toast.success("Review added successfully");
+    } catch (error) {
+      toast.error(error?.data?.message || "Failed to add review");
     }
   };
 
@@ -161,6 +183,29 @@ const ProductUpdate = () => {
             onChange={(e) => setDescription(e.target.value)}
             className="border p-3 rounded-lg w-full mt-4"
           ></textarea>
+
+          {/* Review fields */}
+          {/* <div className="col-span-2 mt-4">
+            <label className="block">Rating (1-5)</label>
+            <input
+              type="number"
+              min="1"
+              max="5"
+              value={rating}
+              onChange={(e) => setRating(e.target.value)}
+              className="border p-3 rounded-lg w-full"
+            />
+          </div>
+          <div className="col-span-2 mt-4">
+            <label className="block">Comment</label>
+            <textarea
+              placeholder="Write a comment"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              className="border p-3 rounded-lg w-full"
+            ></textarea>
+          </div> */}
+
           <div className="flex gap-4 mt-6">
             <button
               onClick={handleSubmit}
@@ -174,6 +219,12 @@ const ProductUpdate = () => {
             >
               Delete
             </button>
+            {/* <button
+              onClick={handleReviewSubmit}
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg mt-4"
+            >
+              Add Review
+            </button> */}
           </div>
         </div>
       </div>
