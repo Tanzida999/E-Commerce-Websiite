@@ -1,6 +1,6 @@
 import { useGetNewProductsQuery } from "../redux/api/productApiSlice.js";
 import Loader from "./Loader.jsx";
-import SmallProducts from "../pages/Products/SmallProducts.jsx";
+// import SmallProducts from "../pages/Products/SmallProducts.jsx";
 import ProductCarousel from "../pages/Products/ProductCarousel.jsx";
 
 const Header = () => {
@@ -25,7 +25,7 @@ const Header = () => {
           <div className="grid grid-cols-2">
             {data.map((product) => (
               <div key={product._id}>
-                <SmallProducts product={product} />
+                {/* <SmallProducts product={product} /> */}
               </div>
             ))}
           </div>
