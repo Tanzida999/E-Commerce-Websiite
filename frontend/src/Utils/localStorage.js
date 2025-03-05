@@ -11,7 +11,7 @@ export const addFavoritesToLocalStorage = (product) => {
 export const removeFavoriteFromLocalStorage = (productId) => {
   const favorites = getFavoritesFromLocalStorage();
   const updateFavorites = favorites.filter(
-    (product) => product.id !== productId
+    (product) => product._id !== productId
   );
 
   localStorage.setItem("favorites", JSON.stringify(updateFavorites));
