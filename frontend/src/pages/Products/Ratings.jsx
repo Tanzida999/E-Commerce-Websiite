@@ -20,4 +20,8 @@ const Ratings = ({ value, text, color }) => {
   );
 };
 
+Ratings.DefaultProps = {
+  color: "yellow-500",
+};
+
 export default Ratings;

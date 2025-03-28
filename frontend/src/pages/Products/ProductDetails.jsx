@@ -112,6 +112,22 @@ const ProductDetails = () => {
                   value={product.rating}
                   text={`${product.numReviews} reviews`}
                 />
+
+                {product.countInStock > 0 && (
+                  <div>
+                    <select
+                      value={qty}
+                      onChange={(e) => setQty(e.target.value)}
+                      className="p-2 w-[6rem] rounded-lg text-black"
+                    >
+                      {[...Array(product.countInStock).keys()].map((x) => (
+                        <option key={x + 1} value={x + 1}>
+                          {x + 1}
+                        </option>
+                      ))}
+                    </select>{" "}
+                  </div>
+                )}
               </div>
             </div>
           </div>
