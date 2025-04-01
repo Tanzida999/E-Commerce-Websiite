@@ -24,7 +24,14 @@ const ProductTabs = ({
   return (
     <div className="flex flex-col md:flex-row">
       <section className="mr-[5rem]">
-        <div className={`flex-1 p-4 cursor-pointer`}></div>
+        <div
+          className={`flex-1 p-4 cursor-pointer text-lg ${
+            activeTab === 1 ? "font-bold" : ""
+          }`}
+          onClick={() => handleTabClick(1)}
+        >
+          Write Your Review
+        </div>
       </section>
     </div>
   );
