@@ -21,6 +21,10 @@ const ProductTabs = ({
   if (isLoading) {
     return <Loader />;
   }
+
+  const handleTabClick = (tabNumer) => {
+    setActiveTab(tabNumer);
+  };
   return (
     <div className="flex flex-col md:flex-row">
       <section className="mr-[5rem]">
@@ -32,6 +36,42 @@ const ProductTabs = ({
         >
           Write Your Review
         </div>
+        <div
+          className={`flex-1 p-4 cursor-pointer text-lg ${
+            activeTab === 2 ? "font-bold" : ""
+          }`}
+          onClick={() => handleTabClick(2)}
+        >
+          All Reviews
+        </div>
+        <div
+          className={`flex-1 p-4 cursor-pointer text-lg ${
+            activeTab === 3 ? "font-bold" : ""
+          }`}
+          onClick={() => handleTabClick(3)}
+        >
+          Related Products
+        </div>
+      </section>
+      {/**Second part */}
+      <section>
+        {activeTab === 1 && (
+          <div className="mt-4">
+            {userInfo ? (
+              <form onSubmit={submitHandler}>
+                <div className="my-2">
+                  <label htmlFor="rating" className="block text-xl mb-2">
+                    Rating
+                  </label>
+                </div>
+              </form>
+            ) : (
+              <p>
+                Please <Link to="/login">Sign In</Link>to right a review
+              </p>
+            )}
+          </div>
+        )}
       </section>
     </div>
   );
