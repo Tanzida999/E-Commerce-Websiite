@@ -18,6 +18,7 @@ import {
 import moment from "moment";
 import HeartIcon from "./HeartIcon";
 import Ratings from "./Ratings.jsx";
+import ProductTabs from "./ProductTabs.jsx";
 
 const ProductDetails = () => {
   const { id: productID } = useParams();
@@ -25,7 +26,7 @@ const ProductDetails = () => {
 
   const [qty, setQty] = useState(1);
   const [rating, setRating] = useState(0);
-  const [comment, setCOmment] = useState("");
+  const [comment, setComment] = useState("");
 
   const {
     data: product,
@@ -34,7 +35,7 @@ const ProductDetails = () => {
     error,
   } = useGetProductDetailsQuery(productID);
 
-  const { useInfo } = useSelector((state) => state.auth);
+  const { userInfo } = useSelector((state) => state.auth);
 
   const [createReview, { isLoading: loadingProductReview }] =
     useCreateReviewMutation();
@@ -129,6 +130,27 @@ const ProductDetails = () => {
                   </div>
                 )}
               </div>
+              <div className="btn-cotainer">
+                <button
+                  // onClick={addToCartHandler}
+                  disable={product.countInStock === 0}
+                  className="bg-pink-600 text-white py-2 px-4 rounded-lg mt-4 md:mt-0"
+                >
+                  Add To Cart
+                </button>
+              </div>
+            </div>
+            <div className="mt-[5rem] container flex flex-wrap itmes-start justify-between">
+              <ProductTabs
+                loadingProductReview={loadingProductReview}
+                userInfo={userInfo}
+                // submitHandler={submitHandler}
+                rating={rating}
+                setRating={setRating}
+                comment={comment}
+                setComment={setComment}
+                product={product}
+              />
             </div>
           </div>
         </>

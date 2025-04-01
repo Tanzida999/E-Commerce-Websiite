@@ -7,7 +7,7 @@ const Ratings = ({ value, text, color }) => {
   return (
     <div className="flex items-center">
       {[...Array(fullStars)].map((_, index) => (
-        <Fastar key={index} className={`text-${color} ml-1`} />
+        <FaStar key={index} className={`text-${color} ml-1`} />
       ))}
       {halfStars === 1 && <FaStarHalfAlt className="{`text-${color} ml-1`}" />}
       {[...Array(emptyStar)].map((_, index) => (
