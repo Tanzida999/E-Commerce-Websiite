@@ -9,7 +9,7 @@ const Ratings = ({ value, text, color }) => {
       {[...Array(fullStars)].map((_, index) => (
         <FaStar key={index} className={`text-${color} ml-1`} />
       ))}
-      {halfStars === 1 && <FaStarHalfAlt className="{`text-${color} ml-1`}" />}
+      {halfStars === 1 && <FaStarHalfAlt className={`text-${color} ml-1`} />}
       {[...Array(emptyStar)].map((_, index) => (
         <FaRegStar key={index} className={`text-${color} ml-1`} />
       ))}

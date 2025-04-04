@@ -17,14 +17,19 @@ const ProductTabs = ({
 }) => {
   const { data, isLoading } = useGetTopProductsQuery();
 
-  const [activeTab, setActiveTab] = useState();
+  const [activeTab, setActiveTab] = useState(0);
+  console.log("Active Tab:", activeTab); // Check active tab state
+
   if (isLoading) {
     return <Loader />;
   }
 
-  const handleTabClick = (tabNumer) => {
-    setActiveTab(tabNumer);
+  const handleTabClick = (tabNumber) => {
+    setActiveTab(tabNumber);
   };
+
+  console.log("Product Reviews:", product?.reviews); // Check the value of product.reviews
+
   return (
     <div className="flex flex-col md:flex-row">
       <section className="mr-[5rem]">
@@ -53,7 +58,8 @@ const ProductTabs = ({
           Related Products
         </div>
       </section>
-      {/**Second part */}
+
+      {/* Second part */}
       <section>
         {activeTab === 1 && (
           <div className="mt-4">
@@ -103,15 +109,48 @@ const ProductTabs = ({
               </form>
             ) : (
               <p>
-                Please <Link to="/login">Sign In</Link>to right a review
+                Please <Link to="/login">Sign In</Link> to write a review
               </p>
             )}
           </div>
         )}
       </section>
+
       <section>
         {activeTab === 2 && (
-          <div> {product.reviews.length === 0 && <p>No Reviews</p>}</div>
+          <div>
+            {/* Check if product and product.reviews exist and if it's empty */}
+            {product && product.reviews ? (
+              product.reviews.length === 0 ? (
+                <p>No Reviews</p>
+              ) : (
+                product.reviews.map((review, index) => (
+                  <div key={index}>
+                    {/* Render review details */}
+                    <p>{review.comment}</p>
+                    <Ratings rating={review.rating} />
+                  </div>
+                ))
+              )
+            ) : (
+              <p>No Reviews</p>
+            )}
+          </div>
+        )}
+      </section>
+      <section>
+        {activeTab === 3 && (
+          <section className="ml-[4rem] flex flex-wrap">
+            {!data || data.length === 0 ? (
+              <p>No related products available.</p>
+            ) : (
+              data.map((product) => (
+                <div key={product._id}>
+                  <SmallProduct product={product} />
+                </div>
+              ))
+            )}
+          </section>
         )}
       </section>
     </div>
