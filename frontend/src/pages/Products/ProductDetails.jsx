@@ -21,48 +21,56 @@ import Ratings from "./Ratings.jsx";
 import ProductTabs from "./ProductTabs.jsx";
 
 const ProductDetails = () => {
-  const { id: productID } = useParams();
+  const { id } = useParams(); // Correctly extracting product ID
+  console.log("Product ID:", id);
   const navigate = useNavigate();
 
   const [qty, setQty] = useState(1);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
+  const [activeTab, setActiveTab] = useState(1);
 
+  // Using the correct 'id' here to fetch the product details
   const {
     data: product,
     isLoading,
     refetch,
     error,
-  } = useGetProductDetailsQuery(productID);
+  } = useGetProductDetailsQuery(id); // Using 'id' here instead of productID
 
   const { userInfo } = useSelector((state) => state.auth);
 
   const [createReview, { isLoading: loadingProductReview }] =
     useCreateReviewMutation();
+
   const submitHandler = async (e) => {
     e.preventDefault();
+    console.log("Review form submitted");
+
     try {
       await createReview({
-        productID,
+        productID: id, // Using 'id' for the product ID
         rating,
         comment,
       }).unwrap();
       refetch();
-      toast.success("review created successfully");
+      toast.success("Review created successfully");
     } catch (error) {
       toast.error(error?.data?.message || error.message);
     }
   };
+
   return (
     <>
       <div>
         <Link
           to="/"
-          className="text-black font-semibold hober:underline ml-[10rem]"
+          className="text-black font-semibold hover:underline ml-[10rem]"
         >
           Go Back
         </Link>
       </div>
+
       {isLoading ? (
         <Loader />
       ) : error ? (
@@ -71,7 +79,7 @@ const ProductDetails = () => {
         </Message>
       ) : (
         <>
-          <div className="flex flex-wrap  items-between mt-[2rem] ml-[10rem]">
+          <div className="flex flex-wrap items-between mt-[2rem] ml-[10rem]">
             <div className="flex-shrink-0 mr-[2rem]">
               <img
                 src={product.image}
@@ -143,17 +151,18 @@ const ProductDetails = () => {
                   </div>
                 )}
               </div>
-              <div className="btn-cotainer">
+              <div className="btn-container">
                 <button
                   // onClick={addToCartHandler}
-                  disable={product.countInStock === 0}
+                  disabled={product.countInStock === 0} // Changed 'disable' to 'disabled'
                   className="bg-pink-600 text-white py-2 px-4 rounded-lg mt-4 md:mt-0"
                 >
                   Add To Cart
                 </button>
               </div>
             </div>
-            <div className="mt-[5rem] container flex flex-wrap itmes-start justify-between">
+
+            <div className="mt-[5rem] container flex flex-wrap items-start justify-between">
               <ProductTabs
                 loadingProductReview={loadingProductReview}
                 userInfo={userInfo}
