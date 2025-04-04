@@ -22,10 +22,14 @@ router
   .route("/")
   .get(fetchProducts)
   .post(authenticate, authorizeAdmin, formidable(), addProduct);
-router.route("/allproducts").get(fetchAllProducts);
-router.route("/:id/reviews").post(authenticate, checkId, addProductReview);
+
+// Put static routes BEFORE dynamic ones
 router.get("/allproducts/top", fetchTopProducts);
+router.get("/allproducts", fetchAllProducts);
 router.get("/new", fetchNewProducts);
+
+router.route("/:id/reviews").post(authenticate, checkId, addProductReview);
+
 router
   .route("/:id")
   .get(fetchProductById)
